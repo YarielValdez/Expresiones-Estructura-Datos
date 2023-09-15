@@ -8,6 +8,7 @@ public class Main {
     public static boolean validacion() {
         boolean val = true, operand = true;
         int par = 0, last = 0;
+        System.out.println("Among us");
         inf = inf.toLowerCase();
         for (int i = 0; i < inf.length(); i++) {
             if (operand) {
