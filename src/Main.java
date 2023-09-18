@@ -42,13 +42,35 @@ public class Main {
         return val;
     }
 
-    public static String pos() {
-        for (int i = 0; i < inf.length(); i++) {
-            int jerry = jerarquia(inf.charAt(i));
-            int select = inf.charAt(i);
+    public static String pos(String inf) {
+        Stack<Character> pila = new Stack<>();
+        StringBuilder resultado = new StringBuilder();
 
+        for (int i = 0; i < Main.inf.length(); i++) {
+            char caracter = Main.inf.charAt(i);
+
+            if (Character.isLetterOrDigit(caracter)) {
+                resultado.append(caracter);
+            } else if (caracter == '(') {
+                pila.push(caracter);
+            } else if (caracter == ')') {
+                while (!pila.isEmpty() && pila.peek() != '(') {
+                    resultado.append(pila.pop());
+                }
+                pila.pop();
+            } else {
+                while (!pila.isEmpty() && jerarquia(caracter) <= jerarquia(pila.peek())) {
+                    resultado.append(pila.pop());
+                }
+                pila.push(caracter);
+            }
         }
-        return "amoung us";
+
+        while (!pila.isEmpty()) {
+            resultado.append(pila.pop());
+        }
+        System.out.println(resultado.toString());
+        return resultado.toString();
     }
 
     public static int jerarquia(char operador) {
