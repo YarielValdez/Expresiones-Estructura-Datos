@@ -105,6 +105,7 @@ public class Main {
                         """);
             } else
                 System.out.println("La expresión está bien escrita");
+                pos(inf);
         }
     }
 }
