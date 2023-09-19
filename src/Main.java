@@ -79,6 +79,40 @@ public class Main {
         return resultado.toString();
     }
 
+    public static String pre(String inf) {
+        Stack<Character> pila = new Stack<>();
+        StringBuilder resultado = new StringBuilder();
+
+        for (int i = inf.length(); i > 0; i--) {
+            char caracter = inf.charAt(i-1);
+
+            if(caracter == 32)
+                continue;
+
+            if (Character.isLetterOrDigit(caracter)) {
+                resultado.append(caracter);
+            } else if (caracter == '(') {
+                pila.push(caracter);
+            } else if (caracter == ')') {
+                while (!pila.isEmpty() && pila.peek() != '(') {
+                    resultado.append(pila.pop());
+                }
+                pila.pop();
+            } else {
+                while (!pila.isEmpty() && jerarquia(caracter) <= jerarquia(pila.peek())) {
+                    resultado.append(pila.pop());
+                }
+                pila.push(caracter);
+            }
+        }
+
+        while (!pila.isEmpty()) {
+            resultado.append(pila.pop());
+        }
+        System.out.println(resultado.reverse().toString());
+        return resultado.reverse().toString();
+    }
+
     public static int jerarquia(char operador) {
         return switch (operador) {
             case '+', '-' -> 1;
@@ -112,6 +146,7 @@ public class Main {
             } else
                 System.out.println("La expresión está bien escrita");
                 pos(inf);
+                pre(inf);
         }
     }
 }
