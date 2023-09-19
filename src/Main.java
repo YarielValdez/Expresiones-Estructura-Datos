@@ -5,11 +5,14 @@ public class Main {
     static String inf;
     static int error = 0;
     static String operator = "+-*/^";
+
     public static boolean validacion() {
         boolean val = true, operand = true;
         int par = 0, last = 0;
         inf = inf.toLowerCase();
         for (int i = 0; i < inf.length(); i++) {
+            if(inf.charAt(i) == 32)
+                continue;
             if (operand) {
                 if (inf.charAt(i) >= 97 & inf.charAt(i) <= 122) {
                     operand = false;
@@ -46,8 +49,11 @@ public class Main {
         Stack<Character> pila = new Stack<>();
         StringBuilder resultado = new StringBuilder();
 
-        for (int i = 0; i < Main.inf.length(); i++) {
-            char caracter = Main.inf.charAt(i);
+        for (int i = 0; i < inf.length(); i++) {
+            char caracter = inf.charAt(i);
+
+            if(caracter == 32)
+                continue;
 
             if (Character.isLetterOrDigit(caracter)) {
                 resultado.append(caracter);
