@@ -42,7 +42,7 @@ public class Main {
                 break;
             }
         }
-        if (par != 0 || operator.contains(Character.toString(last)) || inf.equals("") || !inf.contains(operator)) {
+        if (par != 0 || operator.contains(Character.toString(last)) || inf.isEmpty()) {
             val = false;
         }
         return val;
