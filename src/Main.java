@@ -11,7 +11,7 @@ public class Main {
         int par = 0, last = 0;
         inf = inf.toLowerCase();
         for (int i = 0; i < inf.length(); i++) {
-            if(inf.charAt(i) == 32)
+            if (inf.charAt(i) == 32)
                 continue;
             if (operand) {
                 if (inf.charAt(i) >= 97 & inf.charAt(i) <= 122) {
@@ -26,12 +26,12 @@ public class Main {
                 if (operator.contains(Character.toString(inf.charAt(i)))) {
                     operand = true;
                     last = inf.charAt(i);
-                } else if ((inf.charAt(i) == 41)){
+                } else if ((inf.charAt(i) == 41)) {
                     if (last == 40)
                         val = false;
                     else
-                        par--;}
-                else
+                        par--;
+                } else
                     val = false;
             }
             if (!val) {
@@ -39,7 +39,7 @@ public class Main {
                 break;
             }
         }
-        if(par != 0 || operator.contains(Character.toString((char)last)) || inf.equals("")){
+        if (par != 0 || operator.contains(Character.toString((char) last)) || inf.equals("")) {
             val = false;
         }
         return val;
@@ -52,7 +52,7 @@ public class Main {
         for (int i = 0; i < inf.length(); i++) {
             char caracter = inf.charAt(i);
 
-            if(caracter == 32)
+            if (caracter == 32)
                 continue;
 
             if (Character.isLetterOrDigit(caracter)) {
@@ -63,7 +63,9 @@ public class Main {
                 while (!pila.isEmpty() && pila.peek() != '(') {
                     resultado.append(pila.pop());
                 }
-                pila.pop();
+                if (!pila.isEmpty()) {
+                    pila.pop();
+                }
             } else {
                 while (!pila.isEmpty() && jerarquia(caracter) <= jerarquia(pila.peek())) {
                     resultado.append(pila.pop());
@@ -75,8 +77,44 @@ public class Main {
         while (!pila.isEmpty()) {
             resultado.append(pila.pop());
         }
-        System.out.println(resultado.toString());
+        System.out.println("Expresión postfija: " + resultado.toString());
         return resultado.toString();
+    }
+
+    public static String prefija(String inf) {
+        StringBuilder expresionInvertida = new StringBuilder();
+        Stack<Character> pila = new Stack<>();
+
+        for (int i = inf.length() - 1; i >= 0; i--) {
+            char caracter = inf.charAt(i);
+
+            if (caracter == 32)
+                continue;
+
+            if (Character.isLetterOrDigit(caracter)) {
+                expresionInvertida.append(caracter);
+            } else if (caracter == ')') {
+                pila.push(caracter);
+            } else if (caracter == '(') {
+                while (!pila.isEmpty() && pila.peek() != ')') {
+                    expresionInvertida.append(pila.pop());
+                }
+                if (!pila.isEmpty()) {
+                    pila.pop();
+                }
+            } else {
+                while (!pila.isEmpty() && jerarquia(caracter) < jerarquia(pila.peek())) {
+                    expresionInvertida.append(pila.pop());
+                }
+                pila.push(caracter);
+            }
+        }
+
+        while (!pila.isEmpty()) {
+            expresionInvertida.append(pila.pop());
+        }
+
+        return expresionInvertida.reverse().toString();
     }
 
     public static int jerarquia(char operador) {
@@ -98,20 +136,60 @@ public class Main {
             end = validacion();
 
             if (!end) {
-                System.out.println("Error en el caracter: " + error);
-                System.out.println("""
-                        Errores comunes:
-                        1.- Paréntesis vacío
-                        2.- Paréntesis mal colocados
-                        3.- Dos operadores juntos
-                        4.- Dos operandos juntos
-                        6.- La expresión inicia con un operando diferente de parentesis de apertura
-                        7.- Se escribieron números en lugar de letras
-                        8.- Se utilizaron espacios en la expresión
-                        """);
-            } else
+                System.out.println("Errores encontrados:");
+
+                if (inf.contains("()")) {
+                    System.out.println("Error: Paréntesis vacío");
+                }
+
+                if (!validacionParentesis()) {
+                    System.out.println("Error: Paréntesis mal colocados");
+                }
+
+                if (inf.matches(".*[\\+\\-\\*/\\^]{2,}.*")) {
+                    System.out.println("Error: Dos operadores juntos");
+                }
+
+                if (inf.matches(".*[a-z0-9][a-z0-9].*")) {
+                    System.out.println("Error: Dos operandos juntos");
+                }
+
+                if (inf.length() > 0 && !Character.isLetter(inf.charAt(0)) && inf.charAt(0) != '(') {
+                    System.out.println("Error: La expresión inicia con un operando diferente de paréntesis de apertura");
+                }
+
+                for (int i = 0; i < inf.length(); i++) {
+                    char c = inf.charAt(i);
+                    if (!Character.isLetter(c) && c != '(' && c != ')' && c != '+' && c != '-' && c != '*' && c != '/' && c != '^') {
+                        System.out.println("Error: Caracter no válido en la posición " + (i + 1));
+                    }
+                }
+
+                if (inf.matches(".*\\d[a-z].*")) {
+                    System.out.println("Error: Se escribieron números en lugar de letras");
+                }
+
+            } else {
                 System.out.println("La expresión está bien escrita");
+                String expresionPrefija = prefija(inf);
+                System.out.println("Expresión prefija: " + expresionPrefija);
                 pos(inf);
+            }
         }
+    }
+
+    public static boolean validacionParentesis() {
+        Stack<Character> pila = new Stack<>();
+        for (int i = 0; i < inf.length(); i++) {
+            char c = inf.charAt(i);
+            if (c == '(') {
+                pila.push(c);
+            } else if (c == ')') {
+                if (pila.isEmpty() || pila.pop() != '(') {
+                    return false;
+                }
+            }
+        }
+        return pila.isEmpty();
     }
 }
