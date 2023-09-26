@@ -46,7 +46,7 @@ public class Main {
         return val;
     }
 
-    public static String pos(String inf) {
+    public static String pos() {
         Stack<Character> pila = new Stack<>();
         StringBuilder resultado = new StringBuilder();
 
@@ -78,11 +78,10 @@ public class Main {
         while (!pila.isEmpty()) {
             resultado.append(pila.pop());
         }
-        System.out.println("Expresión postfija: " + resultado.toString());
         return resultado.toString();
     }
 
-    public static String prefija(String inf) {
+    public static String prefija() {
         StringBuilder expresionInvertida = new StringBuilder();
         Stack<Character> pila = new Stack<>();
 
@@ -104,7 +103,7 @@ public class Main {
                     pila.pop();
                 }
             } else {
-                while (!pila.isEmpty() && jerarquia(caracter) < jerarquia(pila.peek())) {
+                while (!pila.isEmpty() && jerarquia(caracter) <= jerarquia(pila.peek())) {
                     expresionInvertida.append(pila.pop());
                 }
                 pila.push(caracter);
@@ -123,7 +122,7 @@ public class Main {
             case '+', '-' -> 1;
             case '*', '/' -> 2;
             case '^' -> 3;
-            case '(' -> 0;
+            case '(',')' -> 0;
             default -> 25;
         };
     }
@@ -169,14 +168,13 @@ public class Main {
                 if (inf.matches(".*\\d[a-z].*")) {
                     System.out.println("Error: Se escribieron números en lugar de letras");
                 }
-                if(operator.contains(Character.toString(last)))
+                if(operator.contains(Character.toString(inf.charAt(inf.length()-1))))
                     System.out.println("Error, la expresión termina en un operador");
 
             } else {
                 System.out.println("La expresión está bien escrita");
-                String expresionPrefija = prefija(inf);
-                System.out.println("Expresión prefija: " + expresionPrefija);
-                pos(inf);
+                System.out.println("Expresión prefija: " + prefija());
+                System.out.println("Expresión postfija: " + pos());
             }
         }
     }
