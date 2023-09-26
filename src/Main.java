@@ -5,10 +5,11 @@ public class Main {
     static String inf;
     static int error = 0;
     static String operator = "+-*/^";
+    static int last=0;
 
     public static boolean validacion() {
         boolean val = true, operand = true;
-        int par = 0, last = 0;
+        int par = 0;
         inf = inf.toLowerCase();
         for (int i = 0; i < inf.length(); i++) {
             if (inf.charAt(i) == 32)
@@ -168,6 +169,8 @@ public class Main {
                 if (inf.matches(".*\\d[a-z].*")) {
                     System.out.println("Error: Se escribieron números en lugar de letras");
                 }
+                if(operator.contains(Character.toString(last)))
+                    System.out.println("Error, la expresión termina en un operador");
 
             } else {
                 System.out.println("La expresión está bien escrita");
