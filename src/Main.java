@@ -1,16 +1,13 @@
-import java.util.Scanner;
-import java.util.Stack;
+import java.util.*;
 
 public class Main {
-    static String inf;
-    static String operator = "+-*/^";
-    static int last=0;
-    static boolean end = false;
+    static String inf, operator = "+-*/^";
+    static int last = 0;
+    static HashMap<Character, Integer> Values = new HashMap<>();
 
     public static boolean validacion() {
         boolean val = true, operand = true;
         int par = 0;
-        inf = inf.toLowerCase();
         for (int i = 0; i < inf.length(); i++) {
             if (inf.charAt(i) == 32)
                 continue;
@@ -35,8 +32,11 @@ public class Main {
                 } else
                     val = false;
             }
+            if (!val) {
+                break;
+            }
         }
-        if (par != 0 || operator.contains(Character.toString((char) last)) || inf.isEmpty()) {
+        if (par != 0 || operator.contains(Character.toString((char) last)) || inf.equals("")) {
             val = false;
         }
         return val;
@@ -118,9 +118,62 @@ public class Main {
             case '+', '-' -> 1;
             case '*', '/' -> 2;
             case '^' -> 3;
-            case '(',')' -> 0;
+            case '(', ')' -> 0;
             default -> 25;
         };
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        boolean end = false;
+        while (!end) {
+            System.out.println("Escriba la expresión infija: ");
+            inf = sc.nextLine();
+            inf = inf.toLowerCase();
+            end = validacion();
+            if (!end) {
+                System.out.println("Errores encontrados:");
+
+                if (inf.contains("()")) {
+                    System.out.println("Error: Paréntesis vacío");
+                }
+
+                if (!validacionParentesis()) {
+                    System.out.println("Error: Paréntesis mal colocados");
+                }
+
+                if (inf.matches(".*[\\+\\-\\*/\\^]{2,}.*")) {
+                    System.out.println("Error: Dos operadores juntos");
+                }
+
+                if (inf.matches(".*[a-z0-9][a-z0-9].*")) {
+                    System.out.println("Error: Dos operandos juntos");
+                }
+
+                if (inf.length() > 0 && !Character.isLetter(inf.charAt(0)) && inf.charAt(0) != '(') {
+                    System.out.println("Error: La expresión inicia con un operando diferente de paréntesis de apertura");
+                }
+
+                for (int i = 0; i < inf.length(); i++) {
+                    char c = inf.charAt(i);
+                    if (!Character.isLetter(c) && c != '(' && c != ')' && c != '+' && c != '-' && c != '*' && c != '/' && c != '^') {
+                        System.out.println("Error: Caracter no válido en la posición " + (i + 1));
+                    }
+                }
+
+                if (inf.matches(".*\\d[a-z].*")) {
+                    System.out.println("Error: Se escribieron números en lugar de letras");
+                }
+                if (operator.contains(Character.toString(inf.charAt(inf.length() - 1))))
+                    System.out.println("Error, la expresión termina en un operador");
+
+            } else {
+                System.out.println("La expresión está bien escrita");
+                System.out.println("Expresión prefija: " + prefija());
+                System.out.println("Expresión postfija: " + pos());
+                valueOf();
+            }
+        }
     }
 
     public static boolean validacionParentesis() {
@@ -138,60 +191,18 @@ public class Main {
         return pila.isEmpty();
     }
 
-    public static void error() {
-        if (!end) {
-            System.out.println("Errores encontrados:");
-
-            if (inf.contains("()")) {
-                System.out.println("Error: Paréntesis vacío");
-            }
-
-            if (!validacionParentesis()) {
-                System.out.println("Error: Paréntesis mal colocados");
-            }
-
-            if (inf.matches(".*[\\+\\-\\*/\\^]{2,}.*")) {
-                System.out.println("Error: Dos operadores juntos");
-            }
-
-            if (inf.matches(".*[a-z0-9][a-z0-9].*")) {
-                System.out.println("Error: Dos operandos juntos");
-            }
-
-            if (inf.length() > 0 && !Character.isLetter(inf.charAt(0)) && inf.charAt(0) != '(') {
-                System.out.println("Error: La expresión inicia con un operando diferente de paréntesis de apertura");
-            }
-
-            for (int i = 0; i < inf.length(); i++) {
-                char c = inf.charAt(i);
-                if (!Character.isLetter(c) && c != '(' && c != ')' && c != '+' && c != '-' && c != '*' && c != '/' && c != '^') {
-                    System.out.println("Error: Caracter no válido en la posición " + (i + 1));
+    public static void valueOf() {
+        Scanner sc = new Scanner(System.in);
+        for (int i = 0; i < inf.length(); i++) {
+            char caracter = inf.charAt(i);
+            if (caracter >= 'a' && caracter <= 'z') {
+                if (!Values.containsKey(caracter)) {
+                    System.out.println("Ingrese el valor de " + caracter);
+                    Values.put(caracter, sc.nextInt());
                 }
             }
-
-            if (inf.matches(".*\\d[a-z].*")) {
-                System.out.println("Error: Se escribieron números en lugar de letras");
-            }
-            if(operator.contains(Character.toString(inf.charAt(inf.length()-1))))
-                System.out.println("Error, la expresión termina en un operador");
-
-        } else {
-            System.out.println("La expresión está bien escrita");
         }
     }
-
-    public static void main (String[]args) {
-        Scanner sc = new Scanner(System.in);
-
-        while (!end) {
-            System.out.println("Escriba la expresión infija: ");
-            inf = sc.nextLine();
-            end = validacion();
-
-            error();
-            }
-        System.out.println("Expresión prefija: " + prefija());
-        System.out.println("Expresión postfija: " + pos());
-    }
 }
+
 
