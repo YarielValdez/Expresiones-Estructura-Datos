@@ -195,11 +195,9 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         for (int i = 0; i < inf.length(); i++) {
             char caracter = inf.charAt(i);
-            if (caracter >= 'a' && caracter <= 'z') {
-                if (!Values.containsKey(caracter)) {
+            if (caracter >= 'a' && caracter <= 'z' && !Values.containsKey(caracter)) {
                     System.out.println("Ingrese el valor de " + caracter);
                     Values.put(caracter, sc.nextInt());
-                }
             }
         }
     }
