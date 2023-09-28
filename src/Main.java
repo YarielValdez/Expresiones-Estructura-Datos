@@ -173,7 +173,7 @@ public class Main {
         System.out.println("Expresión infija con valores: " + replaceVariables(inf));
         System.out.println("Expresión postfija con valores: " + replaceVariables(post));
         System.out.println("Expresión prefija con valores: " + replaceVariables(prefix));
-        System.out.println(EvalPost());
+        System.out.println("Resultado Postfija: "+EvalPost());
     }
 
     public static boolean validacionParentesis() {
