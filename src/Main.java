@@ -1,9 +1,8 @@
 import java.util.*;
-
 public class Main {
-    static String inf, operator = "+-*/^";
+    static String inf,prefix,post, operator = "+-*/^";
     static int last = 0;
-    static HashMap<Character, Integer> Values = new HashMap<>();
+    static HashMap<Character, String> Values = new HashMap<>();
 
     public static boolean validacion() {
         boolean val = true, operand = true;
@@ -169,9 +168,12 @@ public class Main {
 
             } else {
                 System.out.println("La expresión está bien escrita");
-                System.out.println("Expresión prefija: " + prefija());
-                System.out.println("Expresión postfija: " + pos());
+                prefix = prefija();
+                post = pos();
+                System.out.println("Expresión prefija: " + prefix);
+                System.out.println("Expresión postfija: " + post);
                 valueOf();
+                System.out.println(EvalPost());
             }
         }
     }
@@ -197,9 +199,42 @@ public class Main {
             char caracter = inf.charAt(i);
             if (caracter >= 'a' && caracter <= 'z' && !Values.containsKey(caracter)) {
                     System.out.println("Ingrese el valor de " + caracter);
-                    Values.put(caracter, sc.nextInt());
+                    Values.put(caracter, sc.nextLine());
             }
         }
+    }
+
+    public static int eval(String operator,String n2, String n1){
+        int num1 = Integer.parseInt(n1);
+        int num2 = Integer.parseInt(n2);
+        return switch (operator) {
+            case "+" -> num1 + num2;
+            case "-" -> num1 - num2;
+            case "*" -> num1 * num2;
+            case "/" -> num1 / num2;
+            case "^" -> num1 ^ num2;
+            default -> 25;
+        };
+    }
+
+    public static String EvalPost(){
+        Stack<String> funcion = new Stack<>();
+        Stack<String> evaluacion = new Stack<>();
+        for(int i=post.length()-1;i>=0;i--){
+            char elemento = post.charAt(i);
+            if(operator.contains(Character.toString(elemento)))
+                funcion.push(Character.toString(elemento));
+            else{
+                funcion.push(Values.get(elemento));
+            }
+        }
+        while(!funcion.empty()){
+            if(operator.contains(funcion.peek()))
+                evaluacion.push(eval(funcion.pop(),evaluacion.pop(),evaluacion.pop())+"");
+            else
+                evaluacion.push(funcion.pop());
+        }
+        return evaluacion.peek();
     }
 }
 
