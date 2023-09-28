@@ -174,6 +174,7 @@ public class Main {
         System.out.println("Expresión postfija con valores: " + replaceVariables(post));
         System.out.println("Expresión prefija con valores: " + replaceVariables(prefix));
         System.out.println("Resultado Postfija: "+EvalPost());
+        System.out.println("Resultado Prefija: " +EvalPre());
     }
 
     public static boolean validacionParentesis() {
@@ -221,7 +222,7 @@ public class Main {
             case "-" -> num1 - num2;
             case "*" -> num1 * num2;
             case "/" -> num1 / num2;
-            case "^" -> num1 ^ num2;
+            case "^" -> (int)Math.pow(num1, num2);
             default -> 25;
         };
     }
@@ -244,5 +245,22 @@ public class Main {
                 evaluacion.push(funcion.pop());
         }
         return evaluacion.peek();
+    }
+
+    public static String EvalPre(){
+        Stack<String> operando = new Stack<>();
+        Stack<String> operador = new Stack<>();
+        for(int i=0;i<prefix.length();i++){
+            char c = prefix.charAt(i);
+            if(c>='a' && c<='z') {
+                operando.push(Values.get(c));
+                if (operando.size() == 2) {
+                    operando.push(eval(operador.pop(), operando.pop(), operando.pop()) + "");
+                }
+            }
+            else
+                operador.push(Character.toString(c));
+        }
+        return operando.peek();
     }
 }
