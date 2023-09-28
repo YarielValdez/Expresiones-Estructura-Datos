@@ -163,19 +163,17 @@ public class Main {
             end = validacion();
             if (!end)
                error();
-            else {
-                System.out.println("La expresión está bien escrita");
-                prefix = prefija();
-                post = pos();
-                System.out.println("Expresión prefija: " + prefix);
-                System.out.println("Expresión postfija: " + post);
-                valueOf();
-                System.out.println("Expresión infija con valores: " + replaceVariables(inf));
-                System.out.println("Expresión postfija con valores: " + replaceVariables(post));
-                System.out.println("Expresión prefija con valores: " + replaceVariables(prefix));
-                System.out.println(EvalPost());
-            }
         }
+        System.out.println("La expresión está bien escrita");
+        prefix = prefija();
+        post = pos();
+        System.out.println("Expresión prefija: " + prefix);
+        System.out.println("Expresión postfija: " + post);
+        valueOf();
+        System.out.println("Expresión infija con valores: " + replaceVariables(inf));
+        System.out.println("Expresión postfija con valores: " + replaceVariables(post));
+        System.out.println("Expresión prefija con valores: " + replaceVariables(prefix));
+        System.out.println(EvalPost());
     }
 
     public static boolean validacionParentesis() {
