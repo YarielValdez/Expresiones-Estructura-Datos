@@ -13,7 +13,7 @@ public class Main {
             if (inf.charAt(i) == 32)
                 continue;
             if (operand) {
-                if (inf.charAt(i) >= 97 & inf.charAt(i) <= 122) {
+                if (inf.charAt(i) >= 97 && inf.charAt(i) <= 122) {
                     operand = false;
                     last = inf.charAt(i);
                 } else if (inf.charAt(i) == 40) {
@@ -136,11 +136,11 @@ public class Main {
                 System.out.println("Error: Paréntesis mal colocados");
             }
 
-            if (inf.matches(".*[\\+\\-\\*/\\^]{2,}.*")) {
+            if (inf.matches(".[\\+\\-\\/\\^]{2,}.*")) {
                 System.out.println("Error: Dos operadores juntos");
             }
 
-            if (inf.matches(".*[a-z0-9][a-z0-9].*")) {
+            if (inf.matches(".[a-z0-9][a-z0-9].")) {
                 System.out.println("Error: Dos operandos juntos");
             }
 
@@ -155,16 +155,43 @@ public class Main {
                 }
             }
 
-            if (inf.matches(".*\\d[a-z].*")) {
+            if (inf.matches(".\\d[a-z].")) {
                 System.out.println("Error: Se escribieron números en lugar de letras");
             }
-            if(operator.contains(Character.toString(inf.charAt(inf.length()-1))))
+            if (operator.contains(Character.toString(inf.charAt(inf.length() - 1))))
                 System.out.println("Error, la expresión termina en un operador");
 
         } else {
             System.out.println("La expresión está bien escrita");
         }
     }
+
+    public static String replaceVariablesPos() {
+        StringBuilder replaced = new StringBuilder();
+        for (int i = 0; i < pos().length(); i++) {
+            char c = pos().charAt(i);
+            if (Character.isLetter(c) && Values.containsKey(c)) {
+                replaced.append(Values.get(c));
+            } else {
+                replaced.append(c);
+            }
+        }
+        return replaced.toString();
+    }
+
+    public static String replaceVariablesPre() {
+        StringBuilder replaced = new StringBuilder();
+        for (int i = 0; i < prefija().length(); i++) {
+            char c = prefija().charAt(i);
+            if (Character.isLetter(c) && Values.containsKey(c)) {
+                replaced.append(Values.get(c));
+            } else {
+                replaced.append(c);
+            }
+        }
+        return replaced.toString();
+    }
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -175,12 +202,17 @@ public class Main {
             end = validacion();
 
             error();
+            System.out.println("Expresión postfija: " + pos());
+            System.out.println("Expresión prefija: " + prefija());
             valueOf();
-            System.out.println(pos());
-            System.out.println(prefija());
+            String var = pos();
+            replaceVariables();
+
+            System.out.println("Expresión infija con valores: " + replaceVariables());
+            System.out.println("Expresión postfija con valores: " + replaceVariablesPos());
+            System.out.println("Expresión prefija con valores: " + replaceVariablesPre());
         }
     }
-
 
     public static boolean validacionParentesis() {
         Stack<Character> pila = new Stack<>();
@@ -206,5 +238,18 @@ public class Main {
                 Values.put(caracter, sc.nextInt());
             }
         }
+    }
+
+    public static String replaceVariables() {
+        StringBuilder replaced = new StringBuilder();
+        for (int i = 0; i < inf.length(); i++) {
+            char c = inf.charAt(i);
+            if (Character.isLetter(c) && Values.containsKey(c)) {
+                replaced.append(Values.get(c));
+            } else {
+                replaced.append(c);
+            }
+        }
+        return replaced.toString();
     }
 }
