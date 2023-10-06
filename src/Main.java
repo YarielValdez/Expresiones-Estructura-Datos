@@ -29,6 +29,7 @@ public class Main {
             System.out.println("Expresión prefija con valores: " + replaceVariables(prefix));
             System.out.println("Resultado Postfija: " + EvalPost());
             System.out.println("Resultado Prefija: " + EvalPre());
+            System.out.println("Resultado Infija" + EvalInf());
             System.out.println("¿Desea evaluar otra expresión?  Y/N");
             String answer = sc.nextLine();
             end = answer.equalsIgnoreCase("y");
@@ -54,15 +55,15 @@ public class Main {
                     return false;
                 }
             } else
-                if (operator.contains(Character.toString(c)))
-                    operand = true;
-                else if(c==')')
-                    continue;
-                else {
-                    code = 2;
-                    return false;
-                }
+            if (operator.contains(Character.toString(c)))
+                operand = true;
+            else if(c==')')
+                continue;
+            else {
+                code = 2;
+                return false;
             }
+        }
         return !inf.contains("()") && !inf.isEmpty() && validacionParentesis();
     }
 
@@ -245,5 +246,62 @@ public class Main {
                 operador.push(Character.toString(c));
         }
         return operando.peek();
+    }
+
+    public static double eval_i(char operador, double primero, double segundo) {
+        switch (operador) {
+            case '+':
+                return primero + segundo;
+            case '-':
+                return primero - segundo;
+            case '*':
+                return primero * segundo;
+            case '/':
+                return primero / segundo;
+            case '^':
+                return Math.pow(primero, segundo);
+            default:
+                return 0.0;
+        }
+    }
+
+    public static String EvalInf() {
+        Stack<Double> operandos = new Stack<>();
+        Stack<Character> operadores = new Stack<>();
+
+        for (int i = 0; i < inf.length(); i++) {
+            char c = inf.charAt(i);
+
+            if (Character.isLetterOrDigit(c)) {
+                operandos.push(Double.parseDouble(Values.get(c)));
+            } else if (c == '(') {
+                operadores.push(c);
+            } else if (c == ')') {
+                while (!operadores.isEmpty() && operadores.peek() != '(') {
+                    char operador = operadores.pop();
+                    double segundo = operandos.pop();
+                    double primero = operandos.pop();
+                    operandos.push(eval_i(operador, primero, segundo));
+                }
+                operadores.pop(); // Desapilar el '('
+            } else if (operator.contains(Character.toString(c))) {
+                while (!operadores.isEmpty() && jerarquia(c) <= jerarquia(operadores.peek())) {
+                    char operador = operadores.pop();
+                    double segundo = operandos.pop();
+                    double primero = operandos.pop();
+                    operandos.push(eval_i(operador, primero, segundo));
+                }
+                operadores.push(c);
+            }
+        }
+
+        while (!operadores.isEmpty()) {
+            char operador = operadores.pop();
+            double segundo = operandos.pop();
+            double primero = operandos.pop();
+            operandos.push(eval_i(operador, primero, segundo));
+        }
+
+        return operandos.peek().toString();
     }
 }
