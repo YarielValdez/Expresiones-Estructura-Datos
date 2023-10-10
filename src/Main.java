@@ -233,19 +233,34 @@ public class Main {
     }
 
     public static String EvalPre() {
-        Stack<String> operando = new Stack<>();
-        Stack<String> operador = new Stack<>();
-        for (int i = 0; i < prefix.length(); i++) {
+        Stack<Double> stack = new Stack<>();
+        for (int i = prefix.length() - 1; i >= 0; i--) {
             char c = prefix.charAt(i);
-            if (c >= 'a' && c <= 'z') {
-                operando.push(Values.get(c));
-                if (operando.size() == 2) {
-                    operando.push(eval(operador.pop(), operando.pop(), operando.pop()) + "");
+            if (Character.isLetterOrDigit(c)) {
+                stack.push(Double.parseDouble(Values.get(c)));
+            } else {
+                double op1 = stack.pop();
+                double op2 = stack.pop();
+                switch (c) {
+                    case '+':
+                        stack.push(op1 + op2);
+                        break;
+                    case '-':
+                        stack.push(op1 - op2);
+                        break;
+                    case '*':
+                        stack.push(op1 * op2);
+                        break;
+                    case '/':
+                        stack.push(op1 / op2);
+                        break;
+                    case '^':
+                        stack.push(Math.pow(op1, op2));
+                        break;
                 }
-            } else
-                operador.push(Character.toString(c));
+            }
         }
-        return operando.peek();
+        return stack.pop().toString();
     }
 
     public static double eval_i(char operador, double primero, double segundo) {
