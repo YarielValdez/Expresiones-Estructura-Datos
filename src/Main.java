@@ -29,7 +29,7 @@ public class Main {
             System.out.println("Expresión prefija con valores: " + replaceVariables(prefix));
             System.out.println("Resultado Postfija: " + EvalPost());
             System.out.println("Resultado Prefija: " + EvalPre());
-            System.out.println("Resultado Infija" + EvalInf());
+            System.out.println("Resultado Infija: " + EvalInf());
             System.out.println("¿Desea evaluar otra expresión?  Y/N");
             String answer = sc.nextLine();
             end = answer.equalsIgnoreCase("y");
@@ -154,7 +154,7 @@ public class Main {
                     pila.pop();
                 }
             } else {
-                while (!pila.isEmpty() && jerarquia(caracter) <= jerarquia(pila.peek())) {
+                while (!pila.isEmpty() && jerarquia(caracter) < jerarquia(pila.peek())) {
                     expresionInvertida.append(pila.pop());
                 }
                 pila.push(caracter);
